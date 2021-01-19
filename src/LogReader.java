@@ -59,7 +59,6 @@ public class LogReader {
         for(Event e:eventLog){
             if(e.getEventType().equalsIgnoreCase("INVENTORY")){
                 e.printEvent();
-                System.out.println(((Inventory)e).getInventoryType());
             }
         }
         return eventLog;
