@@ -1,0 +1,23 @@
+22
+9:50:11am Turnip POLICY 419551 Applied
+9:50:18am Turnip POLICY 419554 Applied
+9:52:45am Eucalypt POLICY 419554 Applied
+9:52:53am Turnip SOFTWAREUPDATES 225 Non-compliant
+9:53:12am Porcupine INVENTORY Hardware Completed
+9:54:20am Eucalypt SOFTWAREUPDATES 225 Non-compliant
+9:58:28am Accacia INVENTORY Software Interrupted
+10:03:26am Boolarra POLICY 418777 Unapplied
+10:03:27am Boolarra POLICY 419551 Applied
+10:09:00am Whirlwind POLICY 419554 Applied
+10:09:45am Sassafras POLICY 419551 Applied
+10:09:47am Sassafras POLICY 416500 Unapplied
+10:09:51am Whirlwind SOFTWAREUPDATES 225 Compliant
+10:13:32am Eucalypt SOFTWAREUPDATES 225 Failed
+10:28:23am Turnip SOFTWAREUPDATES 225 Compliant
+10:48:00am Scissors INVENTORY Software Interrupted
+10:51:32am Turnip POLICY 419556 Applied
+10:53:11am Porcupine POLICY 419556 Applied
+10:53:27am Turnip SOFTWAREUPDATES 226 Compliant
+10:54:17am Porcupine SOFTWAREUPDATES 226 Non-compliant
+11:02:39am Sassafras INVENTORY Hardware Completed
+11:08:55am Porcupine SOFTWAREUPDATES 226 Failed
