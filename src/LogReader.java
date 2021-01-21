@@ -39,7 +39,7 @@ public class LogReader {
             while(scan.hasNext()){
                 String event = scan.nextLine();
                 eventArray = event.split(" ");
-                eventType = eventArray[1];
+                eventType = eventArray[2];
 
                 if(eventType.equalsIgnoreCase("SOFTWAREUPDATE")){
                     e = new SoftwareUpdate(eventArray[0], eventArray[1], eventArray[2], eventArray[3], eventArray[4]);
@@ -56,11 +56,11 @@ public class LogReader {
             System.out.println(e);
         }
 
-        for(Event e:eventLog){
+       /* for(Event e:eventLog){
             if(e.getEventType().equalsIgnoreCase("INVENTORY")){
                 e.printEvent();
             }
-        }
+        }*/
         return eventLog;
     }
 }
