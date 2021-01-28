@@ -1,9 +1,12 @@
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class LogReader {
+
     private File getFile() {
         Utils utils = new Utils();
         boolean exit = false;
@@ -22,10 +25,11 @@ public class LogReader {
         return file;
     }
 
-    public ArrayList<Event> Parser() {
-        Scanner scan = null;
-        File log = null;
+    public HashMap<String, ArrayList<Event>> Parser() {
+        Scanner scan;
+        File log;
         ArrayList<Event> eventLog = new ArrayList<>();
+        HashMap <String, ArrayList<Event>> machineList = null;
 
         String eventArray[] = {};
 
@@ -36,31 +40,41 @@ public class LogReader {
             scan = new Scanner(log);
             String numberOfEvents = scan.nextLine();
             Event e = null;
+            machineList = new HashMap<String, ArrayList<Event>>();
             while(scan.hasNext()){
+
                 String event = scan.nextLine();
                 eventArray = event.split(" ");
-                eventType = eventArray[2];
-
-                if(eventType.equalsIgnoreCase("SOFTWAREUPDATE")){
-                    e = new SoftwareUpdate(eventArray[0], eventArray[1], eventArray[2], eventArray[3], eventArray[4]);
-                    eventLog.add(e);
-                }else if(eventType.equalsIgnoreCase("POLICY")){
-                    e = new Policy(eventArray[0], eventArray[1], eventArray[2], eventArray[3], eventArray[4]);
-                    eventLog.add(e);
+                //eventArray[0] Event Time
+                //eventArray[1] Machine Name
+                //eventArray[2] Event Type
+                //eventArray[3] Event Code
+                //eventArray[4] Event Status
+                if(!machineList.containsKey(eventArray[1])){
+                    machineList.putIfAbsent(eventArray[1], new ArrayList<>());
+                    machineList.get(eventArray[1]).add(checkInstance(eventArray[0],eventArray[1],eventArray[2],eventArray[3],eventArray[4]));
                 }else{
-                    e = new Inventory(eventArray[0], eventArray[1], eventArray[2], eventArray[3], eventArray[4]);
-                    eventLog.add(e);
+                    machineList.get(eventArray[1]).add(checkInstance(eventArray[0],eventArray[1],eventArray[2],eventArray[3],eventArray[4]));
                 }
             }
+
         } catch(Exception e){
-            System.out.println(e);
+            System.out.println("ERROR" + e);
         }
 
-       /* for(Event e:eventLog){
-            if(e.getEventType().equalsIgnoreCase("INVENTORY")){
-                e.printEvent();
-            }
-        }*/
-        return eventLog;
+        return machineList;
+    }
+    public Event checkInstance(String eventTime, String machineName, String eventType, String eventCode, String eventStatus){
+        Event e;
+        if(eventType.equalsIgnoreCase("SOFTWAREUPDATE")){
+            e = new SoftwareUpdate(eventTime, machineName, eventType, eventCode, eventStatus);
+            return e;
+        }else if(eventType.equalsIgnoreCase("POLICY")){
+            e = new Policy(eventTime, machineName, eventType, eventCode, eventStatus);
+            return e;
+        }else{
+            e = new Inventory(eventTime, machineName, eventType, eventCode, eventStatus);
+            return e;
+        }
     }
 }

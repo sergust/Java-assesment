@@ -8,8 +8,11 @@ public class Utils {
             try {
                 System.out.print(placeholder);
                 choice = Integer.parseInt(scan.nextLine());
+                if(choice < 0 || choice > 3){
+                    System.out.println("Please enter a value from 1 - 3.");
+                }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid selection! Please try again!");
+                System.out.println("Invalid input! Please enter a value from 1 - 3");
             }
         }
         return choice;

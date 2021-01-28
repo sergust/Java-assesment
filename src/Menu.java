@@ -1,9 +1,10 @@
-import org.omg.Messaging.SyncScopeHelper;
 
-import java.io.File;
+
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.HashMap;
+
 
 public class Menu {
     boolean exit;
@@ -18,52 +19,42 @@ public class Menu {
         return choice;
     }
 
-    public void getMachineList(ArrayList<Event> events) {
-        ArrayList<String> machineList = new ArrayList<>();
-
-        for(Event e: events){
-            if (machineList.contains(e.getMachineName()) == false){
-                machineList.add(e.getMachineName());
-            }
-        }
-
+    //display all machines with events in log file
+    public void getMachineList(HashMap<String, ArrayList<Event>> events) {
         System.out.println("List of Machines with reported events");
-        for(String event: machineList)
-            System.out.println(event);
-        // Show event list
-
-        showMenu();
+        for(String machine: events.keySet())
+            System.out.println(machine);
     }
 
-    public void makeFileOfMachineEvents(String machine, ArrayList<Event> events) {
-        ArrayList<Event> machineEventsList = new ArrayList();
-        for(Event e: events){
-            if (e.getMachineName().equalsIgnoreCase(machine)){
-                machineEventsList.add(e);
-            }
-        }
-        PrintWriter pw = null;
-        try {
-            pw = new PrintWriter(machine + "-report.txt");
-            for (Event m : machineEventsList) {
-                if (m instanceof Inventory) {
-                    pw.println(m.getEventTime() + " " + m.getMachineName() + " " + m.getEventType() + " " + ((Inventory) m).getInventoryType() + " " + ((Inventory) m).getInventoryStatus());
-                } else if (m instanceof Policy) {
-                    pw.println(m.getEventTime() + " " + m.getMachineName() + " " + m.getEventType() + " " + ((Policy) m).getPolicyId() + " " + ((Policy) m).getPolicyStatus());
-                } else {
-                    pw.println(m.getEventTime() + " " + m.getMachineName() + " " + m.getEventType() + " " + ((SoftwareUpdate) m).getSoftwareUpdateId() + " " + ((SoftwareUpdate) m).getSoftwareUpdateStatus());
+    //produce a text file that contains all events from an input machine
+    public void makeFileOfMachineEvents(String machine, HashMap<String, ArrayList<Event>> events) {
+
+        if (!events.containsKey(machine)){
+            System.out.println("Invalid machine name");
+            runMethod(2, events);
+        }else {
+            PrintWriter pw;
+            try {
+                pw = new PrintWriter(machine + "-report.txt");
+                for (Event m : events.get(machine)) {
+                    if (m instanceof Inventory) {
+                        pw.println(m.getEventTime() + " " + m.getMachineName() + " " + m.getEventType() + " " + ((Inventory) m).getInventoryType() + " " + ((Inventory) m).getInventoryStatus());
+                    } else if (m instanceof Policy) {
+                        pw.println(m.getEventTime() + " " + m.getMachineName() + " " + m.getEventType() + " " + ((Policy) m).getPolicyId() + " " + ((Policy) m).getPolicyStatus());
+                    } else {
+                        pw.println(m.getEventTime() + " " + m.getMachineName() + " " + m.getEventType() + " " + ((SoftwareUpdate) m).getSoftwareUpdateId() + " " + ((SoftwareUpdate) m).getSoftwareUpdateStatus());
+                    }
                 }
+                pw.println("End of events");
+                pw.close();
+            } catch (Exception ex) {
+                System.out.println("ERROR: " + ex);
             }
-            pw.println("End of events");
-            pw.close();
-        }catch(Exception ex){
-            System.out.println("ERROR: " + ex);
         }
-        // Find machine and retrieve all event
     }
 
-    public void showFailedEvents(ArrayList<Event> events) {
-        // iterate through all events and file failed
+    //check all events on the logfile and display all failed events
+    public void showFailedEvents(HashMap<String, ArrayList<Event>> events) {
     }
 
     private void printHeader() {
@@ -76,7 +67,8 @@ public class Menu {
         System.out.println("--------------------------------------------------------------------");
     }
 
-    public void runMethod(int choice, ArrayList<Event> events) {
+    //public void runMethod(int choice, ArrayList<Event> events) {
+    public void runMethod(int choice, HashMap<String, ArrayList<Event>> events) {
         switch (choice) {
             case 0:
                 exit = true;
