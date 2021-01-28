@@ -66,7 +66,7 @@ public class LogReader {
     }
     public Event checkInstance(String eventTime, String machineName, String eventType, String eventCode, String eventStatus){
         Event e;
-        if(eventType.equalsIgnoreCase("SOFTWAREUPDATE")){
+        if(eventType.equalsIgnoreCase("SOFTWAREUPDATES")){
             e = new SoftwareUpdate(eventTime, machineName, eventType, eventCode, eventStatus);
             return e;
         }else if(eventType.equalsIgnoreCase("POLICY")){

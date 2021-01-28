@@ -4,6 +4,8 @@
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 public class Menu {
@@ -28,29 +30,6 @@ public class Menu {
 
     //produce a text file that contains all events from an input machine
     public void makeFileOfMachineEvents(String machine, HashMap<String, ArrayList<Event>> events) {
-
-        if (!events.containsKey(machine)){
-            System.out.println("Invalid machine name");
-            runMethod(2, events);
-        }else {
-            PrintWriter pw;
-            try {
-                pw = new PrintWriter(machine + "-report.txt");
-                for (Event m : events.get(machine)) {
-                    if (m instanceof Inventory) {
-                        pw.println(m.getEventTime() + " " + m.getMachineName() + " " + m.getEventType() + " " + ((Inventory) m).getInventoryType() + " " + ((Inventory) m).getInventoryStatus());
-                    } else if (m instanceof Policy) {
-                        pw.println(m.getEventTime() + " " + m.getMachineName() + " " + m.getEventType() + " " + ((Policy) m).getPolicyId() + " " + ((Policy) m).getPolicyStatus());
-                    } else {
-                        pw.println(m.getEventTime() + " " + m.getMachineName() + " " + m.getEventType() + " " + ((SoftwareUpdate) m).getSoftwareUpdateId() + " " + ((SoftwareUpdate) m).getSoftwareUpdateStatus());
-                    }
-                }
-                pw.println("End of events");
-                pw.close();
-            } catch (Exception ex) {
-                System.out.println("ERROR: " + ex);
-            }
-        }
     }
 
     //check all events on the logfile and display all failed events
