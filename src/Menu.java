@@ -1,18 +1,15 @@
-
-
-
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-
 public class Menu {
     boolean exit;
     Utils utils = new Utils();
     public int showMenu() {
         int choice = -1;
+        exit = false;
         while (!exit) {
             printHeader();
             choice = utils.getInput("\nEnter your choice: ");
@@ -43,6 +40,7 @@ public class Menu {
         System.out.println("1. Print list of machines that have reported any events");
         System.out.println("2. Make a file reporting all events for a nominated machine");
         System.out.println("3. Print all events signifying failed situations across all machines");
+        System.out.println("0. Exit");
         System.out.println("--------------------------------------------------------------------");
     }
 

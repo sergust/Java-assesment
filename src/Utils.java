@@ -21,4 +21,10 @@ public class Utils {
     public String getString() {
         return scan.nextLine();
     }
+
+    public void printDivider() {
+        System.out.println("                                     ");
+        System.out.println("*************************************");
+        System.out.println("                                     ");
+    }
 }
