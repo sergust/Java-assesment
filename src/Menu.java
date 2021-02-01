@@ -1,3 +1,5 @@
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +29,31 @@ public class Menu {
 
     //produce a text file that contains all events from an input machine
     public void makeFileOfMachineEvents(String machine, HashMap<String, ArrayList<Event>> events) {
+        FileOutputStream fos;
+        ObjectOutputStream oos;
+
+        try {
+            fos = new FileOutputStream(machine + "-report.txt");
+            oos = new ObjectOutputStream(fos);
+            for(Event ev: events.get(machine)) {
+                if (ev.getEventType().equalsIgnoreCase("INVENTORY")) {
+                    Inventory iEv = (Inventory) ev;
+                    oos.writeObject(iEv.getEventTime() + " " + iEv.getMachineName() + " " + iEv.getEventType() + " " + iEv.getInventoryType() + " " + iEv.getInventoryStatus() + "\n");
+                }
+                else if (ev.getEventType().equalsIgnoreCase("POLICY")) {
+                    Policy pEv = (Policy) ev;
+                    oos.writeObject(pEv.getEventTime() + " " + pEv.getMachineName() + " " + pEv.getEventType() + " " + pEv.getPolicyId() + " " + pEv.getPolicyStatus() + "\n");
+                }
+                else if (ev.getEventType().equalsIgnoreCase("SOFTWAREUPDATES")) {
+                    SoftwareUpdate sEv = (SoftwareUpdate) ev;
+                    oos.writeObject(sEv.getEventTime() + " " + sEv.getMachineName() + " " + sEv.getEventType() + " " +  sEv.getSoftwareUpdateId() + " " + sEv.getSoftwareUpdateStatus() + "\n");
+                }
+            }
+            oos.writeObject("EOF");
+        }
+        catch (Exception e) {
+            System.out.println("There was an ERROR.");
+        }
     }
 
     //check all events on the logfile and display all failed events
