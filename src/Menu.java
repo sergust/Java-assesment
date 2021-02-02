@@ -33,7 +33,7 @@ public class Menu {
         ObjectOutputStream oos;
 
         try {
-            fos = new FileOutputStream("C:\\Users\\Jake Antonio\\Documents\\AA School Stuff\\02. Masters in IT\\[Term 1] ICT711 - Programming and Algorithms\\Java-assesment-main\\" + machine + "-report.txt");
+            fos = new FileOutputStream(machine + "-report.txt");
             oos = new ObjectOutputStream(fos);
             oos.writeObject("Events for machine '" + machine + "'\n");
             for(Event ev: events.get(machine)) {
