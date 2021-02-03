@@ -1,9 +1,4 @@
-
-
-
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,31 +29,38 @@ public class Menu {
 
     //produce a text file that contains all events from an input machine
     public void makeFileOfMachineEvents(String machine, HashMap<String, ArrayList<Event>> events) {
-        FileOutputStream fos;
-        ObjectOutputStream oos;
+        PrintWriter pw = null;
 
-        try {
-            fos = new FileOutputStream(machine + "-report.txt");
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject("Events for machine '" + machine + "'\n");
-            for(Event ev: events.get(machine)) {
-                if (ev.getEventType().equalsIgnoreCase("INVENTORY")) {
-                    Inventory iEv = (Inventory) ev;
-                    oos.writeObject(iEv.getEventTime() + " " + iEv.getMachineName() + " " + iEv.getEventType() + " " + iEv.getInventoryType() + " " + iEv.getInventoryStatus() + "\n");
+        if (events.containsKey(machine)) {
+            try {
+                File file = new File("C:\\Users\\Jake Antonio\\Documents\\AA School Stuff\\02. Masters in IT\\[Term 1] ICT711 - Programming and Algorithms\\Java-assesment-main\\" + machine + "-report.txt");
+                pw = new PrintWriter(file);
+                pw.println("Events for machine '" + machine + "'\n");
+                for(Event ev: events.get(machine)) {
+                    if (ev.getEventType().equalsIgnoreCase("INVENTORY")) {
+                        Inventory iEv = (Inventory) ev;
+                        pw.println(iEv.getEventTime() + " " + iEv.getMachineName() + " " + iEv.getEventType() + " " + iEv.getInventoryType() + " " + iEv.getInventoryStatus() + "\n");
+                    }
+                    else if (ev.getEventType().equalsIgnoreCase("POLICY")) {
+                        Policy pEv = (Policy) ev;
+                        pw.println(pEv.getEventTime() + " " + pEv.getMachineName() + " " + pEv.getEventType() + " " + pEv.getPolicyId() + " " + pEv.getPolicyStatus() + "\n");
+                    }
+                    else if (ev.getEventType().equalsIgnoreCase("SOFTWAREUPDATES")) {
+                        SoftwareUpdate sEv = (SoftwareUpdate) ev;
+                        pw.println(sEv.getEventTime() + " " + sEv.getMachineName() + " " + sEv.getEventType() + " " +  sEv.getSoftwareUpdateId() + " " + sEv.getSoftwareUpdateStatus() + "\n");
+                    }
                 }
-                else if (ev.getEventType().equalsIgnoreCase("POLICY")) {
-                    Policy pEv = (Policy) ev;
-                    oos.writeObject(pEv.getEventTime() + " " + pEv.getMachineName() + " " + pEv.getEventType() + " " + pEv.getPolicyId() + " " + pEv.getPolicyStatus() + "\n");
-                }
-                else if (ev.getEventType().equalsIgnoreCase("SOFTWAREUPDATES")) {
-                    SoftwareUpdate sEv = (SoftwareUpdate) ev;
-                    oos.writeObject(sEv.getEventTime() + " " + sEv.getMachineName() + " " + sEv.getEventType() + " " +  sEv.getSoftwareUpdateId() + " " + sEv.getSoftwareUpdateStatus() + "\n");
-                }
+                pw.println("End of events.");
+                pw.close();
             }
-            oos.writeObject("End of events.");
+            catch (Exception e) {
+                System.out.println("ERROR FOUND.");
+            }
         }
-        catch (Exception e) {
-            System.out.println("There was an ERROR.");
+        else {
+            System.out.println("!! INVALID MACHINE NAME !! ");
+            System.out.println("Enter machine name: ");
+            makeFileOfMachineEvents(utils.getString(), events);
         }
     }
 
