@@ -32,7 +32,7 @@ public class Menu {
             try {
                 File file = new File(machine + "-report.txt");
                 pw = new PrintWriter(file);
-                pw.println("Events for machine '" + machine);
+                pw.println("Events for machine '" + machine + "'");
                 for(Event ev: events.get(machine)) {
                     if (ev.getEventType().equalsIgnoreCase("INVENTORY")) {
                         Inventory iEv = (Inventory) ev;
@@ -56,9 +56,7 @@ public class Menu {
             }
         }else{
                 System.out.println("!! INVALID MACHINE NAME !! ");
-                System.out.println("Enter machine name: ");
-                makeFileOfMachineEvents(utils.getString(), events);
-
+                runMethod(2,events);
         }
     }
 
@@ -67,7 +65,7 @@ public class Menu {
         ArrayList<String> failedInventoryEvents = new ArrayList<>();
         ArrayList<String> failedSoftwareEvents = new ArrayList<>();
         Iterator it = events.entrySet().iterator();
-        try{
+        //try{
             while(it.hasNext()){
                 Map.Entry pair = (Map.Entry) it.next();
                 for(Event e: events.get(pair.getKey())){
@@ -99,9 +97,9 @@ public class Menu {
             }else{
                 System.out.println("There are no failed inventory events to show.");
             }
-        } catch (Exception e) {
+       /* } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
-        }
+        }*/
     }
 
     //displays the menu choices

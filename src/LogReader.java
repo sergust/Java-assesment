@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class LogReader {
@@ -32,17 +33,12 @@ public class LogReader {
         HashMap <String, ArrayList<Event>> machineList = null;
 
         String eventArray[] = {};
-
-        String eventType;
-
         try{
             log = getFile();
             scan = new Scanner(log);
-            String numberOfEvents = scan.nextLine();
-            Event e = null;
+            scan.nextLine();
             machineList = new HashMap<String, ArrayList<Event>>();
-            while(scan.hasNext()){
-
+            while (scan.hasNext()) {
                 String event = scan.nextLine();
                 eventArray = event.split(" ");
                 //eventArray[0] Event Time
@@ -51,18 +47,17 @@ public class LogReader {
                 //eventArray[3] Event Code
                 //eventArray[4] Event Status
                 String machineName = eventArray[1].toLowerCase();
-                if(!machineList.containsKey(machineName)){
+                if (!machineList.containsKey(machineName)) {
                     machineList.putIfAbsent(machineName, new ArrayList<>());
-                    machineList.get(machineName).add(checkInstance(eventArray[0],eventArray[1],eventArray[2],eventArray[3],eventArray[4]));
-                }else{
-                    machineList.get(machineName).add(checkInstance(eventArray[0],eventArray[1],eventArray[2],eventArray[3],eventArray[4]));
+                    machineList.get(machineName).add(checkInstance(eventArray[0], eventArray[1], eventArray[2], eventArray[3], eventArray[4]));
+                } else {
+                    machineList.get(machineName).add(checkInstance(eventArray[0], eventArray[1], eventArray[2], eventArray[3], eventArray[4]));
                 }
             }
-
+            System.out.println("Log file successfully loaded");
         } catch(Exception e){
-            System.out.println("ERROR" + e);
+            System.out.println("ERROR " + e);
         }
-
         return machineList;
     }
 
