@@ -1,14 +1,6 @@
-
-
-
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 
 public class Menu {
@@ -28,74 +20,96 @@ public class Menu {
     //display all machines with events in log file
     public void getMachineList(HashMap<String, ArrayList<Event>> events) {
         System.out.println("List of Machines with reported events");
+        //Iterate through the HashMap keys and print them
         for(String machine: events.keySet())
-            System.out.println(machine);
+            System.out.println(machine.substring(0,1).toUpperCase() + machine.substring(1));
     }
 
     //produce a text file that contains all events from an input machine
     public void makeFileOfMachineEvents(String machine, HashMap<String, ArrayList<Event>> events) {
-        FileOutputStream fos;
-        ObjectOutputStream oos;
-
-        try {
-            fos = new FileOutputStream(machine + "-report.txt");
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject("Events for machine '" + machine + "'\n");
-            for(Event ev: events.get(machine)) {
-                if (ev.getEventType().equalsIgnoreCase("INVENTORY")) {
-                    Inventory iEv = (Inventory) ev;
-                    oos.writeObject(iEv.getEventTime() + " " + iEv.getMachineName() + " " + iEv.getEventType() + " " + iEv.getInventoryType() + " " + iEv.getInventoryStatus() + "\n");
+        PrintWriter pw;
+        String machineLowerCase = machine.toLowerCase();
+        if (events.containsKey(machineLowerCase)) {
+            try {
+                File file = new File(machineLowerCase + "-report.txt");
+                pw = new PrintWriter(file);
+                pw.println("Events for machine '" + machineLowerCase);
+                for(Event ev: events.get(machineLowerCase)) {
+                    if (ev.getEventType().equalsIgnoreCase("INVENTORY")) {
+                        Inventory iEv = (Inventory) ev;
+                        pw.println(iEv.getEventTime() + " " + iEv.getMachineName() + " " + iEv.getEventType() + " " + iEv.getInventoryType() + " " + iEv.getInventoryStatus());
+                    }
+                    else if (ev.getEventType().equalsIgnoreCase("POLICY")) {
+                        Policy pEv = (Policy) ev;
+                        pw.println(pEv.getEventTime() + " " + pEv.getMachineName() + " " + pEv.getEventType() + " " + pEv.getPolicyId() + " " + pEv.getPolicyStatus());
+                    }
+                    else if (ev.getEventType().equalsIgnoreCase("SOFTWAREUPDATES")) {
+                        SoftwareUpdate sEv = (SoftwareUpdate) ev;
+                        pw.println(sEv.getEventTime() + " " + sEv.getMachineName() + " " + sEv.getEventType() + " " +  sEv.getSoftwareUpdateId() + " " + sEv.getSoftwareUpdateStatus());
+                    }
                 }
-                else if (ev.getEventType().equalsIgnoreCase("POLICY")) {
-                    Policy pEv = (Policy) ev;
-                    oos.writeObject(pEv.getEventTime() + " " + pEv.getMachineName() + " " + pEv.getEventType() + " " + pEv.getPolicyId() + " " + pEv.getPolicyStatus() + "\n");
-                }
-                else if (ev.getEventType().equalsIgnoreCase("SOFTWAREUPDATES")) {
-                    SoftwareUpdate sEv = (SoftwareUpdate) ev;
-                    oos.writeObject(sEv.getEventTime() + " " + sEv.getMachineName() + " " + sEv.getEventType() + " " +  sEv.getSoftwareUpdateId() + " " + sEv.getSoftwareUpdateStatus() + "\n");
-                }
+                pw.println("End of events.");
+                pw.close();
+                System.out.println(machineLowerCase + "-report.txt successfully created.");
             }
-            oos.writeObject("End of events.");
+            catch (Exception e) {
+                System.out.println("ERROR FOUND." + e);
+            }
+        }else{
+                System.out.println("!! INVALID MACHINE NAME !! ");
+                System.out.println("Enter machine name: ");
+                makeFileOfMachineEvents(utils.getString(), events);
+
+            }
+
         }
-        catch (Exception e) {
-            System.out.println("There was an ERROR.");
-        }
-    }
 
     //check all events on the logfile and display all failed events
     public void showFailedEvents(HashMap<String, ArrayList<Event>> events) {
-        ArrayList<String> failedEvents = new ArrayList<>();
+        ArrayList<String> failedInventoryEvents = new ArrayList<>();
+        ArrayList<String> failedSoftwareEvents = new ArrayList<>();
         Iterator it = events.entrySet().iterator();
         try{
-            System.out.println("\nSoftware updates that Failed:");
             while(it.hasNext()){
                 Map.Entry pair = (Map.Entry) it.next();
                 for(Event e: events.get(pair.getKey())){
                     if(e instanceof SoftwareUpdate){
                         if(((SoftwareUpdate) e).getSoftwareUpdateStatus().equalsIgnoreCase("Failed")){
-                            System.out.println(((SoftwareUpdate) e).getMachineName() + ": update " +((SoftwareUpdate) e).getSoftwareUpdateId());
+                           failedSoftwareEvents.add(((SoftwareUpdate) e).getMachineName() + ": update " +((SoftwareUpdate) e).getSoftwareUpdateId());
                         }
                     }
                     else if(e instanceof Inventory){
                         if(((Inventory) e).getInventoryStatus().equalsIgnoreCase("interrupted"))
-                            failedEvents.add( ((Inventory) e).getMachineName() + ": " + ((Inventory) e).getInventoryType() + " Inventory");
+                            failedInventoryEvents.add( ((Inventory) e).getMachineName() + ": " + ((Inventory) e).getInventoryType() + " Inventory");
                     }
                 }
 
                 it.remove();
             }
-            if(!failedEvents.isEmpty()){
-                System.out.println ("\nInventory actions that Failed to complete:");
-                for(String failed: failedEvents){
-                    if(failed.contains("INVENTORY"))
-                        System.out.println(failed);
+
+            if(!failedSoftwareEvents.isEmpty()) {
+                System.out.println("\nSoftware actions that failed to complete:");
+                for (String failed : failedSoftwareEvents) {
+                    System.out.println(failed);
                 }
+            }else{
+                System.out.println("There are no failed software update events to show.");
+            }
+
+            if(!failedInventoryEvents.isEmpty()) {
+                System.out.println("\nInventory actions that failed to complete:");
+                for (String failed : failedInventoryEvents) {
+                    System.out.println(failed);
+                }
+            }else{
+                System.out.println("There are no failed inventory events to show.");
             }
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
     }
 
+    //displays the menu choices
     private void printHeader() {
         System.out.println("Menu");
         System.out.println("Please make a selection:");

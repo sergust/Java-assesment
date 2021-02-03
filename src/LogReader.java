@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class LogReader {
@@ -13,7 +14,7 @@ public class LogReader {
         File file = null;
         while (!exit) {
             try {
-                System.out.println("Enter name of file: ");
+                System.out.println("Enter name of log file to read: ");
                 String fileName = utils.getString();
                 file = new File(fileName);
                 new Scanner(file);
@@ -50,11 +51,12 @@ public class LogReader {
                 //eventArray[2] Event Type
                 //eventArray[3] Event Code
                 //eventArray[4] Event Status
-                if(!machineList.containsKey(eventArray[1])){
-                    machineList.putIfAbsent(eventArray[1], new ArrayList<>());
-                    machineList.get(eventArray[1]).add(checkInstance(eventArray[0],eventArray[1],eventArray[2],eventArray[3],eventArray[4]));
+                String machineName = eventArray[1].toLowerCase();
+                if(!machineList.containsKey(machineName)){
+                    machineList.putIfAbsent(machineName, new ArrayList<>());
+                    machineList.get(machineName).add(checkInstance(eventArray[0],eventArray[1],eventArray[2],eventArray[3],eventArray[4]));
                 }else{
-                    machineList.get(eventArray[1]).add(checkInstance(eventArray[0],eventArray[1],eventArray[2],eventArray[3],eventArray[4]));
+                    machineList.get(machineName).add(checkInstance(eventArray[0],eventArray[1],eventArray[2],eventArray[3],eventArray[4]));
                 }
             }
 
@@ -64,6 +66,8 @@ public class LogReader {
 
         return machineList;
     }
+
+    //checks and creates the corresponding object type
     public Event checkInstance(String eventTime, String machineName, String eventType, String eventCode, String eventStatus){
         Event e;
         if(eventType.equalsIgnoreCase("SOFTWAREUPDATES")){
