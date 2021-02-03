@@ -28,13 +28,13 @@ public class Menu {
     //produce a text file that contains all events from an input machine
     public void makeFileOfMachineEvents(String machine, HashMap<String, ArrayList<Event>> events) {
         PrintWriter pw;
-        String machineLowerCase = machine.toLowerCase();
-        if (events.containsKey(machineLowerCase)) {
+        System.out.println(machine);
+        if (events.containsKey(machine)) {
             try {
-                File file = new File(machineLowerCase + "-report.txt");
+                File file = new File(machine + "-report.txt");
                 pw = new PrintWriter(file);
-                pw.println("Events for machine '" + machineLowerCase);
-                for(Event ev: events.get(machineLowerCase)) {
+                pw.println("Events for machine '" + machine);
+                for(Event ev: events.get(machine)) {
                     if (ev.getEventType().equalsIgnoreCase("INVENTORY")) {
                         Inventory iEv = (Inventory) ev;
                         pw.println(iEv.getEventTime() + " " + iEv.getMachineName() + " " + iEv.getEventType() + " " + iEv.getInventoryType() + " " + iEv.getInventoryStatus());
@@ -50,7 +50,7 @@ public class Menu {
                 }
                 pw.println("End of events.");
                 pw.close();
-                System.out.println(machineLowerCase + "-report.txt successfully created.");
+                System.out.println(machine + "-report.txt successfully created.");
             }
             catch (Exception e) {
                 System.out.println("ERROR FOUND." + e);
@@ -60,9 +60,8 @@ public class Menu {
                 System.out.println("Enter machine name: ");
                 makeFileOfMachineEvents(utils.getString(), events);
 
-            }
-
         }
+    }
 
     //check all events on the logfile and display all failed events
     public void showFailedEvents(HashMap<String, ArrayList<Event>> events) {
@@ -83,8 +82,6 @@ public class Menu {
                             failedInventoryEvents.add( ((Inventory) e).getMachineName() + ": " + ((Inventory) e).getInventoryType() + " Inventory");
                     }
                 }
-
-                it.remove();
             }
 
             if(!failedSoftwareEvents.isEmpty()) {
@@ -132,7 +129,7 @@ public class Menu {
                 break;
             case 2:
                 System.out.println("\nEnter machine name: ");
-                makeFileOfMachineEvents(utils.getString(), events);
+                makeFileOfMachineEvents(utils.getString().toLowerCase(), events);
                 break;
             case 3:
                 showFailedEvents(events);
