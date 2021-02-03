@@ -65,7 +65,7 @@ public class Menu {
         ArrayList<String> failedInventoryEvents = new ArrayList<>();
         ArrayList<String> failedSoftwareEvents = new ArrayList<>();
         Iterator it = events.entrySet().iterator();
-        //try{
+        try{
             while(it.hasNext()){
                 Map.Entry pair = (Map.Entry) it.next();
                 for(Event e: events.get(pair.getKey())){
@@ -97,9 +97,9 @@ public class Menu {
             }else{
                 System.out.println("There are no failed inventory events to show.");
             }
-       /* } catch (Exception e) {
+          } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
-        }*/
+        }
     }
 
     //displays the menu choices
