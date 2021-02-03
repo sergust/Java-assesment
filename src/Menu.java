@@ -28,7 +28,6 @@ public class Menu {
     //produce a text file that contains all events from an input machine
     public void makeFileOfMachineEvents(String machine, HashMap<String, ArrayList<Event>> events) {
         PrintWriter pw;
-        System.out.println(machine);
         if (events.containsKey(machine)) {
             try {
                 File file = new File(machine + "-report.txt");
@@ -83,7 +82,6 @@ public class Menu {
                     }
                 }
             }
-
             if(!failedSoftwareEvents.isEmpty()) {
                 System.out.println("\nSoftware actions that failed to complete:");
                 for (String failed : failedSoftwareEvents) {
