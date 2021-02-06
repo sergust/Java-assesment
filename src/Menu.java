@@ -65,40 +65,36 @@ public class Menu {
         ArrayList<String> failedInventoryEvents = new ArrayList<>();
         ArrayList<String> failedSoftwareEvents = new ArrayList<>();
         Iterator it = events.entrySet().iterator();
-        try{
-            while(it.hasNext()){
-                Map.Entry pair = (Map.Entry) it.next();
-                for(Event e: events.get(pair.getKey())){
-                    if(e instanceof SoftwareUpdate){
-                        if(((SoftwareUpdate) e).getSoftwareUpdateStatus().equalsIgnoreCase("Failed")){
-                           failedSoftwareEvents.add(((SoftwareUpdate) e).getMachineName() + ": update " +((SoftwareUpdate) e).getSoftwareUpdateId());
-                        }
-                    }
-                    else if(e instanceof Inventory){
-                        if(((Inventory) e).getInventoryStatus().equalsIgnoreCase("interrupted"))
-                            failedInventoryEvents.add( ((Inventory) e).getMachineName() + ": " + ((Inventory) e).getInventoryType() + " Inventory");
+        while(it.hasNext()){
+            Map.Entry pair = (Map.Entry) it.next();
+            for(Event e: events.get(pair.getKey())){
+                if(e instanceof SoftwareUpdate){
+                    if(((SoftwareUpdate) e).getSoftwareUpdateStatus().equalsIgnoreCase("Failed")){
+                       failedSoftwareEvents.add(((SoftwareUpdate) e).getMachineName() + ": update " +((SoftwareUpdate) e).getSoftwareUpdateId());
                     }
                 }
-            }
-            if(!failedSoftwareEvents.isEmpty()) {
-                System.out.println("\nSoftware actions that failed to complete:");
-                for (String failed : failedSoftwareEvents) {
-                    System.out.println(failed);
+                else if(e instanceof Inventory){
+                    if(((Inventory) e).getInventoryStatus().equalsIgnoreCase("interrupted"))
+                        failedInventoryEvents.add( ((Inventory) e).getMachineName() + ": " + ((Inventory) e).getInventoryType() + " Inventory");
                 }
-            }else{
-                System.out.println("There are no failed software update events to show.");
             }
+        }
+        if(!failedSoftwareEvents.isEmpty()) {
+            System.out.println("\nSoftware actions that failed to complete:");
+            for (String failed : failedSoftwareEvents) {
+                System.out.println(failed);
+            }
+        }else{
+            System.out.println("There are no failed software update events to show.");
+        }
 
-            if(!failedInventoryEvents.isEmpty()) {
-                System.out.println("\nInventory actions that failed to complete:");
-                for (String failed : failedInventoryEvents) {
-                    System.out.println(failed);
-                }
-            }else{
-                System.out.println("There are no failed inventory events to show.");
+        if(!failedInventoryEvents.isEmpty()) {
+            System.out.println("\nInventory actions that failed to complete:");
+            for (String failed : failedInventoryEvents) {
+                System.out.println(failed);
             }
-          } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
+        }else{
+            System.out.println("There are no failed inventory events to show.");
         }
     }
 
